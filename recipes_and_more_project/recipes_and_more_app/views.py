@@ -21,11 +21,13 @@ def recipes_list(request):
 def full_recipe_by_id(request, receipt_id):
     if request.method == 'GET':
         ingredient_name_amount_result = ingredient_name_and_amount_query(receipt_id)
-        total_receipt_cal_per_100gr_result = total_receipt_cal_per_100gr()
-        specific_full_recipe = Recipe.objects.filter(id=receipt_id)
-        serializer_specific_full_recipe = SpecificFullRecipeSerializer(specific_full_recipe, many=True)
-        return Response([serializer_specific_full_recipe.data, total_receipt_cal_per_100gr_result,
-                         ingredient_name_amount_result], status=status.HTTP_200_OK)
+        total_receipt_cal_per_100gr_result = total_receipt_cal_per_100gr(receipt_id)
+        specific_full_recipe = Recipe.objects.get(id=receipt_id)
+        serializer_specific_full_recipe = SpecificFullRecipeSerializer(specific_full_recipe)
+        ret_val = dict(serializer_specific_full_recipe.data)
+        ret_val['receipt_cal_per_100gr'] = total_receipt_cal_per_100gr_result
+        ret_val['ingredient_name_amount_result'] = ingredient_name_amount_result
+        return Response(ret_val, status=status.HTTP_200_OK)
 
 
 @api_view(['GET', 'POST'])
