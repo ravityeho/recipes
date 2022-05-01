@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 # Create your views here.
-from .custom_queries import ingredient_name_and_amount_query, total_receipt_cal_per_100gr
+from .custom_queries import ingredient_name_and_amount_query, total_receipt_cal_per_100gr, search_recipe_by_category
 from .models import Recipe, RecipeReviews
 from .serializers import RecipeSerializer, RecipeReviewsSerializer, SpecificFullRecipeSerializer
 
@@ -45,4 +45,9 @@ def recipe_reviews(request, recipe_id):
         return Response(serializer_recipe_reviews_list.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['GET'])
+def recipe_search_by_category(request, category):
+    if request.method == 'GET':
+        search_recipe_by_category_result = search_recipe_by_category(category)
+        return Response(search_recipe_by_category_result, status=status.HTTP_200_OK)
 
